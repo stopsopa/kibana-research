@@ -2,6 +2,8 @@ version: '3'
 services:
 
   # from: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+
+  # more about configuring docker instance of es: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-configuration-methods
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
     container_name: es_${PROJECT_NAME}_01
@@ -11,7 +13,12 @@ services:
       - discovery.seed_hosts=es02,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+
+      # curl -XPUT 'http://localhost:$ES_PORT/_all/_settings?preserve_existing=true' -d '{"index.number_of_replicas" : "0","index.number_of_shards" : "1"}
+      # from: https://kb.objectrocket.com/elasticsearch/how-to-specify-the-number-of-shards-and-number-of-replicas-per-shard-in-elasticsearch#changing+default+number+of+shards+on+an+index%3A
+#      - index.number_of_shards=1
+#      - index.number_of_replicas=0
     ulimits:
       memlock:
         soft: -1
@@ -33,7 +40,7 @@ services:
       - discovery.seed_hosts=es01,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
     ulimits:
       memlock:
         soft: -1
@@ -44,24 +51,24 @@ services:
       - ${PROJECT_NAME}
 
 
-  es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
-    container_name: es_${PROJECT_NAME}_03
-    environment:
-      - node.name=es03
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es02
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - ./es/${PROJECT_NAME}/es03:/usr/share/elasticsearch/data
-    networks:
-      - ${PROJECT_NAME}
+#  es03:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+#    container_name: es_${PROJECT_NAME}_03
+#    environment:
+#      - node.name=es03
+#      - cluster.name=es-docker-cluster
+#      - discovery.seed_hosts=es01,es02
+#      - cluster.initial_master_nodes=es01,es02,es03
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - ./es/${PROJECT_NAME}/es03:/usr/share/elasticsearch/data
+#    networks:
+#      - ${PROJECT_NAME}
 
   # from: https://www.elastic.co/guide/en/kibana/current/docker.html
   # WARNING WARNING WARNING: on mac it might be necessary to increase docker memory limit:
@@ -78,7 +85,7 @@ services:
     depends_on:
       - es01
       - es02
-      - es03
+#      - es03
     networks:
       - ${PROJECT_NAME}
 

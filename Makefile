@@ -9,3 +9,6 @@ docs:
 
 dev:
 	/bin/bash develop.sh
+
+fix:
+	@echo /bin/bash fixtures.sh
