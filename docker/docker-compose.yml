@@ -13,6 +13,11 @@ services:
       - discovery.seed_hosts=es02,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
+
+#      - xpack.security.enabled=true
+      # on localhost you will see the error:
+      # Transport SSL must be enabled if security is enabled on a [basic] license. Please set [xpack.security.transport.ssl.enabled] to [true] or disable security by setting [xpack.security.enabled] to [false]
+
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
 
       # curl -XPUT 'http://localhost:$ES_PORT/_all/_settings?preserve_existing=true' -d '{"index.number_of_replicas" : "0","index.number_of_shards" : "1"}
@@ -29,8 +34,6 @@ services:
       - "${ES_PORT}:9200"
     networks:
       - ${PROJECT_NAME}
-
-
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
     container_name: es_${PROJECT_NAME}_02
@@ -40,6 +43,7 @@ services:
       - discovery.seed_hosts=es01,es03
       - cluster.initial_master_nodes=es01,es02,es03
       - bootstrap.memory_lock=true
+#      - xpack.security.enabled=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
     ulimits:
       memlock:
@@ -49,26 +53,27 @@ services:
       - ./es/${PROJECT_NAME}/es02:/usr/share/elasticsearch/data
     networks:
       - ${PROJECT_NAME}
-
-
-#  es03:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
-#    container_name: es_${PROJECT_NAME}_03
-#    environment:
-#      - node.name=es03
-#      - cluster.name=es-docker-cluster
-#      - discovery.seed_hosts=es01,es02
-#      - cluster.initial_master_nodes=es01,es02,es03
-#      - bootstrap.memory_lock=true
-#      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - ./es/${PROJECT_NAME}/es03:/usr/share/elasticsearch/data
-#    networks:
-#      - ${PROJECT_NAME}
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+    container_name: es_${PROJECT_NAME}_03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+#      - xpack.security.enabled=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es/${PROJECT_NAME}/es03:/usr/share/elasticsearch/data
+        # g(Security settings in Elasticsearch)
+#      /usr/share/elasticsearch/config
+    networks:
+      - ${PROJECT_NAME}
 
   # from: https://www.elastic.co/guide/en/kibana/current/docker.html
   # WARNING WARNING WARNING: on mac it might be necessary to increase docker memory limit:
@@ -85,7 +90,7 @@ services:
     depends_on:
       - es01
       - es02
-#      - es03
+      - es03
     networks:
       - ${PROJECT_NAME}
 

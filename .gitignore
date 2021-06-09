@@ -1,2 +1,3 @@
 /docker/es/
 *-tmp-*
+*.tar.gz
