@@ -1,11 +1,18 @@
 # Udemy course
 https://www.udemy.com/course/data-visualization-with-kibana/
 
+# REQUIREMENTS
+It looks like elasticsearch is quite memory hungry so for purpose of running local instance with 3 nodes I had to increase memory limit in Docker (on MAC) to 8GB
+![fields](_doc/8gb.png)
+
+... obviously also restart local docker instance
+
 # INSTALLATION
 - pull the repository, enter the main directory
 - comment out `kibana` container in `docker/docker-compose.yml`
 - run `make doc` (to run docker containers)
-- execute in bash command line:
+- WARNING: at this point give the cluster some time to properly spin up before continuing  
+- then execute in bash command line:
 
 ```bash
 curl http://localhost:3368/_cat/indices
@@ -35,6 +42,7 @@ curl http://localhost:3368/_cat/templates
 - then run `make docs` (to stop containers)
 - uncomment "kibana" container in `docker/docker-compose.yml`
 - run `make doc` (to relaunch containers constellation, but this time with kibana container)
+- then visit `http://0.0.0.0:3369` - also give the kibana some time to spin up because it will not work immediately, just wait...
 
 ## tip
 if anything goes wrong just stop containers `make docs` then remove entire directory `docker/es` and repeat installation process again step by step
