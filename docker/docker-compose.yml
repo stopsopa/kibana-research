@@ -30,6 +30,8 @@ services:
         hard: -1
     volumes:
       - ./es/${PROJECT_NAME}/es01:/usr/share/elasticsearch/data
+      - ./backup:/usr/share/elasticsearch/backup
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - "${ES_PORT}:9200"
     networks:
@@ -51,6 +53,8 @@ services:
         hard: -1
     volumes:
       - ./es/${PROJECT_NAME}/es02:/usr/share/elasticsearch/data
+      - ./backup:/usr/share/elasticsearch/backup
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - ${PROJECT_NAME}
   es03:
@@ -72,6 +76,8 @@ services:
       - ./es/${PROJECT_NAME}/es03:/usr/share/elasticsearch/data
         # g(Security settings in Elasticsearch)
 #      /usr/share/elasticsearch/config
+      - ./backup:/usr/share/elasticsearch/backup
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - ${PROJECT_NAME}
 
