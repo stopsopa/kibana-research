@@ -43,7 +43,7 @@ curl http://localhost:3368/_cat/templates
 
 - then run `make docs` (to stop containers)
 - uncomment "kibana" container in `docker/docker-compose.yml`
-- run `make doc` (to relaunch containers constellation, but this time with kibana container)
+- run `make doc` (to relaunch containers formation, but this time with kibana container)
 - then visit `http://0.0.0.0:3369` - also give the kibana some time to spin up because it will not work immediately, just wait...
 
 ## Tip
